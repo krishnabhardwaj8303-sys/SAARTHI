@@ -35,18 +35,19 @@ def init_db():
             trade TEXT,
             confidence REAL,
             needs_human_review INTEGER,
+            skill_gap_note TEXT,
             officer_action TEXT,
             action_at TEXT,
             created_at TEXT
         )
     """)
     conn.commit()
-    try:
-        cur.execute("ALTER TABLE beneficiaries ADD COLUMN officer_action TEXT")
-        cur.execute("ALTER TABLE beneficiaries ADD COLUMN action_at TEXT")
-        conn.commit()
-    except sqlite3.OperationalError:
-        pass
+    for col in ["officer_action TEXT", "action_at TEXT", "skill_gap_note TEXT"]:
+        try:
+            cur.execute(f"ALTER TABLE beneficiaries ADD COLUMN {col}")
+            conn.commit()
+        except sqlite3.OperationalError:
+            pass
     conn.close()
 
 init_db()
@@ -66,6 +67,7 @@ class Recommendation(BaseModel):
     trade: str
     confidence: float
     needs_human_review: bool
+    skill_gap_note: str = ""
 
 class SaveBeneficiaryRequest(BaseModel):
     profile: BeneficiaryProfile
@@ -128,15 +130,31 @@ _course_texts = [entry["keywords"] for entry in NSQF_CATALOGUE]
 _vectorizer = TfidfVectorizer()
 _tfidf_matrix = _vectorizer.fit_transform(_course_texts)
 
+SKILL_GAP_NOTES = {
+    "hi": {
+        "no_match": "Aapke jawabon se koi clear trade match nahi mila. Field officer ke saath basic career-counselling session recommend kiya jaata hai.",
+        "low": "Match mila hai lekin confidence kam hai — training shuru karne se pehle ek chhoti foundational/orientation session helpful ho sakti hai.",
+        "none": ""
+    },
+    "en": {
+        "no_match": "No clear trade match found from your answers. A basic career-counselling session with a field officer is recommended.",
+        "low": "A match was found but confidence is low — a short foundational/orientation session before enrolling may help.",
+        "none": ""
+    }
+}
+
 def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
     text_blob = f"{profile.skills_interests} {profile.family_occupation} {profile.current_livelihood} {profile.local_opportunity_awareness}".lower().strip()
+    lang = profile.language if profile.language in SKILL_GAP_NOTES else "hi"
+    notes = SKILL_GAP_NOTES[lang]
 
     if not text_blob:
         return Recommendation(
             nsqf_course="No confident match found",
             trade="Unknown",
             confidence=0.0,
-            needs_human_review=True
+            needs_human_review=True,
+            skill_gap_note=notes["no_match"]
         )
 
     user_vector = _vectorizer.transform([text_blob])
@@ -153,14 +171,19 @@ def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
             nsqf_course="No confident match found",
             trade="Unknown",
             confidence=confidence,
-            needs_human_review=True
+            needs_human_review=True,
+            skill_gap_note=notes["no_match"]
         )
+
+    needs_review = confidence < 0.35
+    gap_note = notes["low"] if needs_review else notes["none"]
 
     return Recommendation(
         nsqf_course=best_match["course"],
         trade=best_match["trade"],
         confidence=confidence,
-        needs_human_review=confidence < 0.35
+        needs_human_review=needs_review,
+        skill_gap_note=gap_note
     )
 
 @app.get("/")
@@ -186,15 +209,15 @@ def save_beneficiary(data: SaveBeneficiaryRequest):
             education, family_occupation, current_livelihood, skills_interests,
             mobility_constraints, employment_preference, local_opportunity_awareness,
             language, nsqf_course, trade, confidence, needs_human_review,
-            officer_action, action_at, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            skill_gap_note, officer_action, action_at, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data.profile.education, data.profile.family_occupation, data.profile.current_livelihood,
         data.profile.skills_interests, data.profile.mobility_constraints,
         data.profile.employment_preference, data.profile.local_opportunity_awareness,
         data.profile.language, data.recommendation.nsqf_course, data.recommendation.trade,
         data.recommendation.confidence, int(data.recommendation.needs_human_review),
-        None, None,
+        data.recommendation.skill_gap_note, None, None,
         datetime.now().isoformat()
     ))
     conn.commit()
