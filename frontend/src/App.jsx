@@ -6,69 +6,81 @@ const API_BASE = "http://localhost:8000";
 
 const TRANSLATIONS = {
   hi: {
-    tagline: "आपकी आवाज़, आपका रास्ता",
-    languageLabel: "भाषा चुनें",
-    navIntake: "आवाज़ इनपुट",
-    navDashboard: "फील्ड ऑफिसर डैशबोर्ड",
-    progressSuffix: "प्रश्न पूरे हुए",
-    startRecording: "🎙️ बोलना शुरू करें",
-    recording: "⏹️ सुन रहा हूँ...",
-    unsupportedBrowser: "इस ब्राउज़र में वॉइस रिकग्निशन सपोर्ट नहीं है। कृपया Chrome इस्तेमाल करें।",
-    listening: "सुन रहा हूँ... बोलिए",
-    processing: "प्रोसेस हो रहा है...",
-    errorPrefix: "त्रुटि: ",
-    youSaid: "आपने कहा: ",
-    recommendationReady: "धन्यवाद! आपकी सिफारिश तैयार की जा रही है...",
-    recommendationTitle: "आपकी सिफारिश",
-    course: "एनएसक्यूएफ कोर्स",
-    trade: "ट्रेड",
-    confidenceLabel: "विश्वास स्तर",
-    reviewPending: "⚠️ फील्ड ऑफिसर समीक्षा लंबित — स्वचालित विश्वास स्तर कम था",
-    autoApproved: "✅ स्वतः स्वीकृत",
-    savedMsg: "रिकॉर्ड डैशबोर्ड में सेव हो गया।",
-    dashboardTitle: "लाभार्थी",
-    refresh: "रीफ्रेश करें",
-    loading: "लोड हो रहा है...",
-    noBeneficiaries: "अभी तक कोई लाभार्थी सेव नहीं हुआ।",
-    colDate: "तारीख़",
-    colEducation: "शिक्षा",
-    colOccupation: "व्यवसाय",
-    colCourse: "कोर्स",
-    colTrade: "ट्रेड",
-    colConfidence: "विश्वास स्तर",
-    colStatus: "स्थिति",
-    needsReview: "समीक्षा आवश्यक",
-    approved: "स्वतः स्वीकृत",
-    officerApproved: "अधिकारी द्वारा स्वीकृत",
-    officerReassigned: "पुनः असाइन किया गया",
-    approveBtn: "स्वीकृत करें",
-    reassignBtn: "पुनः असाइन करें",
-    detailsTitle: "पूरी प्रोफ़ाइल",
-    close: "बंद करें",
-    fam: "पारिवारिक व्यवसाय",
-    skills: "रुचियाँ / कौशल",
-    mobility: "आवागमन बाधाएँ",
-    empPref: "रोजगार वरीयता",
-    localAware: "स्थानीय अवसर जानकारी",
-    greeting: "नमस्ते! चलिए शुरू करते हैं। आपने कितनी पढ़ाई की है?",
+    tagline: "Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¥â‚¬ Ã Â¤â€ Ã Â¤ÂµÃ Â¤Â¾Ã Â¤Å“Ã Â¤Â¼, Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¤Â¾ Ã Â¤Â°Ã Â¤Â¾Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¤Ã Â¤Â¾",
+    languageLabel: "Ã Â¤Â­Ã Â¤Â¾Ã Â¤Â·Ã Â¤Â¾ Ã Â¤Å¡Ã Â¥ÂÃ Â¤Â¨Ã Â¥â€¡Ã Â¤â€š",
+    districtLabel: "Ã Â¤Å“Ã Â¤Â¿Ã Â¤Â²Ã Â¤Â¾ Ã Â¤Å¡Ã Â¥ÂÃ Â¤Â¨Ã Â¥â€¡Ã Â¤â€š",
+    districtNone: "Ã Â¤Å“Ã Â¤Â¿Ã Â¤Â²Ã Â¤Â¾ Ã Â¤Å¡Ã Â¥ÂÃ Â¤Â¨Ã Â¥â€¡Ã Â¤â€š (Ã Â¤ÂµÃ Â¥Ë†Ã Â¤â€¢Ã Â¤Â²Ã Â¥ÂÃ Â¤ÂªÃ Â¤Â¿Ã Â¤â€¢)",
+    navIntake: "Ã Â¤â€ Ã Â¤ÂµÃ Â¤Â¾Ã Â¤Å“Ã Â¤Â¼ Ã Â¤â€¡Ã Â¤Â¨Ã Â¤ÂªÃ Â¥ÂÃ Â¤Å¸",
+    navIVR: "Ã Â¤Â«Ã Â¥â€¹Ã Â¤Â¨ Ã Â¤â€¢Ã Â¥â€°Ã Â¤Â² Ã Â¤Â¡Ã Â¥â€¡Ã Â¤Â®Ã Â¥â€¹",
+    navDashboard: "Ã Â¤Â«Ã Â¥â‚¬Ã Â¤Â²Ã Â¥ÂÃ Â¤Â¡ Ã Â¤â€˜Ã Â¤Â«Ã Â¤Â¿Ã Â¤Â¸Ã Â¤Â° Ã Â¤Â¡Ã Â¥Ë†Ã Â¤Â¶Ã Â¤Â¬Ã Â¥â€¹Ã Â¤Â°Ã Â¥ÂÃ Â¤Â¡",
+    progressSuffix: "Ã Â¤ÂªÃ Â¥ÂÃ Â¤Â°Ã Â¤Â¶Ã Â¥ÂÃ Â¤Â¨ Ã Â¤ÂªÃ Â¥â€šÃ Â¤Â°Ã Â¥â€¡ Ã Â¤Â¹Ã Â¥ÂÃ Â¤Â",
+    startRecording: "Ã°Å¸Å½â„¢Ã¯Â¸Â Ã Â¤Â¬Ã Â¥â€¹Ã Â¤Â²Ã Â¤Â¨Ã Â¤Â¾ Ã Â¤Â¶Ã Â¥ÂÃ Â¤Â°Ã Â¥â€š Ã Â¤â€¢Ã Â¤Â°Ã Â¥â€¡Ã Â¤â€š",
+    recording: "Ã¢ÂÂ¹Ã¯Â¸Â Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¨ Ã Â¤Â°Ã Â¤Â¹Ã Â¤Â¾ Ã Â¤Â¹Ã Â¥â€šÃ Â¤Â...",
+    unsupportedBrowser: "Ã Â¤â€¡Ã Â¤Â¸ Ã Â¤Â¬Ã Â¥ÂÃ Â¤Â°Ã Â¤Â¾Ã Â¤â€°Ã Â¤Å“Ã Â¤Â¼Ã Â¤Â° Ã Â¤Â®Ã Â¥â€¡Ã Â¤â€š Ã Â¤ÂµÃ Â¥â€°Ã Â¤â€¡Ã Â¤Â¸ Ã Â¤Â°Ã Â¤Â¿Ã Â¤â€¢Ã Â¤â€”Ã Â¥ÂÃ Â¤Â¨Ã Â¤Â¿Ã Â¤Â¶Ã Â¤Â¨ Ã Â¤Â¸Ã Â¤ÂªÃ Â¥â€¹Ã Â¤Â°Ã Â¥ÂÃ Â¤Å¸ Ã Â¤Â¨Ã Â¤Â¹Ã Â¥â‚¬Ã Â¤â€š Ã Â¤Â¹Ã Â¥Ë†Ã Â¥Â¤ Ã Â¤â€¢Ã Â¥Æ’Ã Â¤ÂªÃ Â¤Â¯Ã Â¤Â¾ Chrome Ã Â¤â€¡Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¤Ã Â¥â€¡Ã Â¤Â®Ã Â¤Â¾Ã Â¤Â² Ã Â¤â€¢Ã Â¤Â°Ã Â¥â€¡Ã Â¤â€šÃ Â¥Â¤",
+    listening: "Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¨ Ã Â¤Â°Ã Â¤Â¹Ã Â¤Â¾ Ã Â¤Â¹Ã Â¥â€šÃ Â¤Â... Ã Â¤Â¬Ã Â¥â€¹Ã Â¤Â²Ã Â¤Â¿Ã Â¤Â",
+    processing: "Ã Â¤ÂªÃ Â¥ÂÃ Â¤Â°Ã Â¥â€¹Ã Â¤Â¸Ã Â¥â€¡Ã Â¤Â¸ Ã Â¤Â¹Ã Â¥â€¹ Ã Â¤Â°Ã Â¤Â¹Ã Â¤Â¾ Ã Â¤Â¹Ã Â¥Ë†...",
+    errorPrefix: "Ã Â¤Â¤Ã Â¥ÂÃ Â¤Â°Ã Â¥ÂÃ Â¤Å¸Ã Â¤Â¿: ",
+    youSaid: "Ã Â¤â€ Ã Â¤ÂªÃ Â¤Â¨Ã Â¥â€¡ Ã Â¤â€¢Ã Â¤Â¹Ã Â¤Â¾: ",
+    recommendationReady: "Ã Â¤Â§Ã Â¤Â¨Ã Â¥ÂÃ Â¤Â¯Ã Â¤ÂµÃ Â¤Â¾Ã Â¤Â¦! Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¥â‚¬ Ã Â¤Â¸Ã Â¤Â¿Ã Â¤Â«Ã Â¤Â¾Ã Â¤Â°Ã Â¤Â¿Ã Â¤Â¶ Ã Â¤Â¤Ã Â¥Ë†Ã Â¤Â¯Ã Â¤Â¾Ã Â¤Â° Ã Â¤â€¢Ã Â¥â‚¬ Ã Â¤Å“Ã Â¤Â¾ Ã Â¤Â°Ã Â¤Â¹Ã Â¥â‚¬ Ã Â¤Â¹Ã Â¥Ë†...",
+    recommendationTitle: "Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¥â‚¬ Ã Â¤Â¸Ã Â¤Â¿Ã Â¤Â«Ã Â¤Â¾Ã Â¤Â°Ã Â¤Â¿Ã Â¤Â¶",
+    course: "Ã Â¤ÂÃ Â¤Â¨Ã Â¤ÂÃ Â¤Â¸Ã Â¤â€¢Ã Â¥ÂÃ Â¤Â¯Ã Â¥â€šÃ Â¤ÂÃ Â¤Â« Ã Â¤â€¢Ã Â¥â€¹Ã Â¤Â°Ã Â¥ÂÃ Â¤Â¸",
+    trade: "Ã Â¤Å¸Ã Â¥ÂÃ Â¤Â°Ã Â¥â€¡Ã Â¤Â¡",
+    confidenceLabel: "Ã Â¤ÂµÃ Â¤Â¿Ã Â¤Â¶Ã Â¥ÂÃ Â¤ÂµÃ Â¤Â¾Ã Â¤Â¸ Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¤Ã Â¤Â°",
+    reviewPending: "Ã¢Å¡Â Ã¯Â¸Â Ã Â¤Â«Ã Â¥â‚¬Ã Â¤Â²Ã Â¥ÂÃ Â¤Â¡ Ã Â¤â€˜Ã Â¤Â«Ã Â¤Â¿Ã Â¤Â¸Ã Â¤Â° Ã Â¤Â¸Ã Â¤Â®Ã Â¥â‚¬Ã Â¤â€¢Ã Â¥ÂÃ Â¤Â·Ã Â¤Â¾ Ã Â¤Â²Ã Â¤â€šÃ Â¤Â¬Ã Â¤Â¿Ã Â¤Â¤ Ã¢â‚¬â€ Ã Â¤Â¸Ã Â¥ÂÃ Â¤ÂµÃ Â¤Å¡Ã Â¤Â¾Ã Â¤Â²Ã Â¤Â¿Ã Â¤Â¤ Ã Â¤ÂµÃ Â¤Â¿Ã Â¤Â¶Ã Â¥ÂÃ Â¤ÂµÃ Â¤Â¾Ã Â¤Â¸ Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¤Ã Â¤Â° Ã Â¤â€¢Ã Â¤Â® Ã Â¤Â¥Ã Â¤Â¾",
+    autoApproved: "Ã¢Å“â€¦ Ã Â¤Â¸Ã Â¥ÂÃ Â¤ÂµÃ Â¤Â¤Ã Â¤Æ’ Ã Â¤Â¸Ã Â¥ÂÃ Â¤ÂµÃ Â¥â‚¬Ã Â¤â€¢Ã Â¥Æ’Ã Â¤Â¤",
+    savedMsg: "Ã Â¤Â°Ã Â¤Â¿Ã Â¤â€¢Ã Â¥â€°Ã Â¤Â°Ã Â¥ÂÃ Â¤Â¡ Ã Â¤Â¡Ã Â¥Ë†Ã Â¤Â¶Ã Â¤Â¬Ã Â¥â€¹Ã Â¤Â°Ã Â¥ÂÃ Â¤Â¡ Ã Â¤Â®Ã Â¥â€¡Ã Â¤â€š Ã Â¤Â¸Ã Â¥â€¡Ã Â¤Âµ Ã Â¤Â¹Ã Â¥â€¹ Ã Â¤â€”Ã Â¤Â¯Ã Â¤Â¾Ã Â¥Â¤",
+    dashboardTitle: "Ã Â¤Â²Ã Â¤Â¾Ã Â¤Â­Ã Â¤Â¾Ã Â¤Â°Ã Â¥ÂÃ Â¤Â¥Ã Â¥â‚¬",
+    refresh: "Ã Â¤Â°Ã Â¥â‚¬Ã Â¤Â«Ã Â¥ÂÃ Â¤Â°Ã Â¥â€¡Ã Â¤Â¶ Ã Â¤â€¢Ã Â¤Â°Ã Â¥â€¡Ã Â¤â€š",
+    loading: "Ã Â¤Â²Ã Â¥â€¹Ã Â¤Â¡ Ã Â¤Â¹Ã Â¥â€¹ Ã Â¤Â°Ã Â¤Â¹Ã Â¤Â¾ Ã Â¤Â¹Ã Â¥Ë†...",
+    noBeneficiaries: "Ã Â¤â€¦Ã Â¤Â­Ã Â¥â‚¬ Ã Â¤Â¤Ã Â¤â€¢ Ã Â¤â€¢Ã Â¥â€¹Ã Â¤Ë† Ã Â¤Â²Ã Â¤Â¾Ã Â¤Â­Ã Â¤Â¾Ã Â¤Â°Ã Â¥ÂÃ Â¤Â¥Ã Â¥â‚¬ Ã Â¤Â¸Ã Â¥â€¡Ã Â¤Âµ Ã Â¤Â¨Ã Â¤Â¹Ã Â¥â‚¬Ã Â¤â€š Ã Â¤Â¹Ã Â¥ÂÃ Â¤â€ Ã Â¥Â¤",
+    colDate: "Ã Â¤Â¤Ã Â¤Â¾Ã Â¤Â°Ã Â¥â‚¬Ã Â¤â€“Ã Â¤Â¼",
+    colEducation: "Ã Â¤Â¶Ã Â¤Â¿Ã Â¤â€¢Ã Â¥ÂÃ Â¤Â·Ã Â¤Â¾",
+    colOccupation: "Ã Â¤ÂµÃ Â¥ÂÃ Â¤Â¯Ã Â¤ÂµÃ Â¤Â¸Ã Â¤Â¾Ã Â¤Â¯",
+    colCourse: "Ã Â¤â€¢Ã Â¥â€¹Ã Â¤Â°Ã Â¥ÂÃ Â¤Â¸",
+    colTrade: "Ã Â¤Å¸Ã Â¥ÂÃ Â¤Â°Ã Â¥â€¡Ã Â¤Â¡",
+    colConfidence: "Ã Â¤ÂµÃ Â¤Â¿Ã Â¤Â¶Ã Â¥ÂÃ Â¤ÂµÃ Â¤Â¾Ã Â¤Â¸ Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¤Ã Â¤Â°",
+    colStatus: "Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¥Ã Â¤Â¿Ã Â¤Â¤Ã Â¤Â¿",
+    colDistrict: "Ã Â¤Å“Ã Â¤Â¿Ã Â¤Â²Ã Â¤Â¾",
+    needsReview: "Ã Â¤Â¸Ã Â¤Â®Ã Â¥â‚¬Ã Â¤â€¢Ã Â¥ÂÃ Â¤Â·Ã Â¤Â¾ Ã Â¤â€ Ã Â¤ÂµÃ Â¤Â¶Ã Â¥ÂÃ Â¤Â¯Ã Â¤â€¢",
+    approved: "Ã Â¤Â¸Ã Â¥ÂÃ Â¤ÂµÃ Â¤Â¤Ã Â¤Æ’ Ã Â¤Â¸Ã Â¥ÂÃ Â¤ÂµÃ Â¥â‚¬Ã Â¤â€¢Ã Â¥Æ’Ã Â¤Â¤",
+    officerApproved: "Ã Â¤â€¦Ã Â¤Â§Ã Â¤Â¿Ã Â¤â€¢Ã Â¤Â¾Ã Â¤Â°Ã Â¥â‚¬ Ã Â¤Â¦Ã Â¥ÂÃ Â¤ÂµÃ Â¤Â¾Ã Â¤Â°Ã Â¤Â¾ Ã Â¤Â¸Ã Â¥ÂÃ Â¤ÂµÃ Â¥â‚¬Ã Â¤â€¢Ã Â¥Æ’Ã Â¤Â¤",
+    officerReassigned: "Ã Â¤ÂªÃ Â¥ÂÃ Â¤Â¨Ã Â¤Æ’ Ã Â¤â€¦Ã Â¤Â¸Ã Â¤Â¾Ã Â¤â€¡Ã Â¤Â¨ Ã Â¤â€¢Ã Â¤Â¿Ã Â¤Â¯Ã Â¤Â¾ Ã Â¤â€”Ã Â¤Â¯Ã Â¤Â¾",
+    approveBtn: "Ã Â¤Â¸Ã Â¥ÂÃ Â¤ÂµÃ Â¥â‚¬Ã Â¤â€¢Ã Â¥Æ’Ã Â¤Â¤ Ã Â¤â€¢Ã Â¤Â°Ã Â¥â€¡Ã Â¤â€š",
+    reassignBtn: "Ã Â¤ÂªÃ Â¥ÂÃ Â¤Â¨Ã Â¤Æ’ Ã Â¤â€¦Ã Â¤Â¸Ã Â¤Â¾Ã Â¤â€¡Ã Â¤Â¨ Ã Â¤â€¢Ã Â¤Â°Ã Â¥â€¡Ã Â¤â€š",
+    detailsTitle: "Ã Â¤ÂªÃ Â¥â€šÃ Â¤Â°Ã Â¥â‚¬ Ã Â¤ÂªÃ Â¥ÂÃ Â¤Â°Ã Â¥â€¹Ã Â¤Â«Ã Â¤Â¼Ã Â¤Â¾Ã Â¤â€¡Ã Â¤Â²",
+    close: "Ã Â¤Â¬Ã Â¤â€šÃ Â¤Â¦ Ã Â¤â€¢Ã Â¤Â°Ã Â¥â€¡Ã Â¤â€š",
+    fam: "Ã Â¤ÂªÃ Â¤Â¾Ã Â¤Â°Ã Â¤Â¿Ã Â¤ÂµÃ Â¤Â¾Ã Â¤Â°Ã Â¤Â¿Ã Â¤â€¢ Ã Â¤ÂµÃ Â¥ÂÃ Â¤Â¯Ã Â¤ÂµÃ Â¤Â¸Ã Â¤Â¾Ã Â¤Â¯",
+    skills: "Ã Â¤Â°Ã Â¥ÂÃ Â¤Å¡Ã Â¤Â¿Ã Â¤Â¯Ã Â¤Â¾Ã Â¤Â / Ã Â¤â€¢Ã Â¥Å’Ã Â¤Â¶Ã Â¤Â²",
+    mobility: "Ã Â¤â€ Ã Â¤ÂµÃ Â¤Â¾Ã Â¤â€”Ã Â¤Â®Ã Â¤Â¨ Ã Â¤Â¬Ã Â¤Â¾Ã Â¤Â§Ã Â¤Â¾Ã Â¤ÂÃ Â¤Â",
+    empPref: "Ã Â¤Â°Ã Â¥â€¹Ã Â¤Å“Ã Â¤â€”Ã Â¤Â¾Ã Â¤Â° Ã Â¤ÂµÃ Â¤Â°Ã Â¥â‚¬Ã Â¤Â¯Ã Â¤Â¤Ã Â¤Â¾",
+    localAware: "Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¥Ã Â¤Â¾Ã Â¤Â¨Ã Â¥â‚¬Ã Â¤Â¯ Ã Â¤â€¦Ã Â¤ÂµÃ Â¤Â¸Ã Â¤Â° Ã Â¤Å“Ã Â¤Â¾Ã Â¤Â¨Ã Â¤â€¢Ã Â¤Â¾Ã Â¤Â°Ã Â¥â‚¬",
+    greeting: "Ã Â¤Â¨Ã Â¤Â®Ã Â¤Â¸Ã Â¥ÂÃ Â¤Â¤Ã Â¥â€¡! Ã Â¤Å¡Ã Â¤Â²Ã Â¤Â¿Ã Â¤Â Ã Â¤Â¶Ã Â¥ÂÃ Â¤Â°Ã Â¥â€š Ã Â¤â€¢Ã Â¤Â°Ã Â¤Â¤Ã Â¥â€¡ Ã Â¤Â¹Ã Â¥Ë†Ã Â¤â€šÃ Â¥Â¤ Ã Â¤â€ Ã Â¤ÂªÃ Â¤Â¨Ã Â¥â€¡ Ã Â¤â€¢Ã Â¤Â¿Ã Â¤Â¤Ã Â¤Â¨Ã Â¥â‚¬ Ã Â¤ÂªÃ Â¤Â¢Ã Â¤Â¼Ã Â¤Â¾Ã Â¤Ë† Ã Â¤â€¢Ã Â¥â‚¬ Ã Â¤Â¹Ã Â¥Ë†?",
+    incomingCall: "Ã Â¤â€ Ã Â¤Â¨Ã Â¥â€¡ Ã Â¤ÂµÃ Â¤Â¾Ã Â¤Â²Ã Â¥â‚¬ Ã Â¤â€¢Ã Â¥â€°Ã Â¤Â²: SAARTHI Ã Â¤Â¹Ã Â¥â€¡Ã Â¤Â²Ã Â¥ÂÃ Â¤ÂªÃ Â¤Â²Ã Â¤Â¾Ã Â¤â€¡Ã Â¤Â¨",
+    connectBtn: "Ã Â¤â€¢Ã Â¥â€°Ã Â¤Â² Ã Â¤Å“Ã Â¥â€¹Ã Â¤Â¡Ã Â¤Â¼Ã Â¥â€¡Ã Â¤â€š",
+    connected: "Ã Â¤â€¢Ã Â¥â€°Ã Â¤Â² Ã Â¤Å“Ã Â¥ÂÃ Â¤Â¡Ã Â¤Â¼ Ã Â¤â€”Ã Â¤Ë†",
+    hangUp: "Ã Â¤â€¢Ã Â¥â€°Ã Â¤Â² Ã Â¤Â¸Ã Â¤Â®Ã Â¤Â¾Ã Â¤ÂªÃ Â¥ÂÃ Â¤Â¤ Ã Â¤â€¢Ã Â¤Â°Ã Â¥â€¡Ã Â¤â€š",
+    ivrNote: "Ã Â¤Â¯Ã Â¤Â¹ Ã Â¤ÂÃ Â¤â€¢ Ã Â¤Â«Ã Â¥â€¹Ã Â¤Â¨-Ã Â¤â€¢Ã Â¥â€°Ã Â¤Â² Ã Â¤â€ Ã Â¤Â§Ã Â¤Â¾Ã Â¤Â°Ã Â¤Â¿Ã Â¤Â¤ (IVR) Ã Â¤â€¦Ã Â¤Â¨Ã Â¥ÂÃ Â¤Â­Ã Â¤Âµ Ã Â¤â€¢Ã Â¤Â¾ Ã Â¤Â¡Ã Â¥â€¡Ã Â¤Â®Ã Â¥â€¹ Ã Â¤Â¹Ã Â¥Ë† Ã¢â‚¬â€ Ã Â¤Â«Ã Â¥â‚¬Ã Â¤Å¡Ã Â¤Â° Ã Â¤Â«Ã Â¥â€¹Ã Â¤Â¨ Ã Â¤â€°Ã Â¤ÂªÃ Â¤Â¯Ã Â¥â€¹Ã Â¤â€”Ã Â¤â€¢Ã Â¤Â°Ã Â¥ÂÃ Â¤Â¤Ã Â¤Â¾Ã Â¤â€œÃ Â¤â€š Ã Â¤â€¢Ã Â¥â€¡ Ã Â¤Â²Ã Â¤Â¿Ã Â¤Â, Ã Â¤Â¬Ã Â¤Â¿Ã Â¤Â¨Ã Â¤Â¾ Ã Â¤â€¡Ã Â¤â€šÃ Â¤Å¸Ã Â¤Â°Ã Â¤Â¨Ã Â¥â€¡Ã Â¤Å¸ Ã Â¤Â¬Ã Â¥ÂÃ Â¤Â°Ã Â¤Â¾Ã Â¤â€°Ã Â¤Å“Ã Â¤Â¼Ã Â¤Â° Ã Â¤â€¢Ã Â¥â€¡ Ã Â¤Â­Ã Â¥â‚¬ Ã Â¤Â¯Ã Â¤Â¹Ã Â¥â‚¬ Ã Â¤Â¸Ã Â¤Â¿Ã Â¤Â¸Ã Â¥ÂÃ Â¤Å¸Ã Â¤Â® Ã Â¤â€¢Ã Â¤Â¾Ã Â¤Â® Ã Â¤â€¢Ã Â¤Â° Ã Â¤Â¸Ã Â¤â€¢Ã Â¤Â¤Ã Â¤Â¾ Ã Â¤Â¹Ã Â¥Ë†Ã Â¥Â¤ Ã Â¤Â¬Ã Â¥Ë†Ã Â¤â€¢Ã Â¤ÂÃ Â¤â€šÃ Â¤Â¡ Ã Â¤ÂµÃ Â¤Â¹Ã Â¥â‚¬ Ã Â¤Â¹Ã Â¥Ë†, Ã Â¤Â¸Ã Â¤Â¿Ã Â¤Â°Ã Â¥ÂÃ Â¤Â« Ã Â¤â€¡Ã Â¤â€šÃ Â¤Å¸Ã Â¤Â°Ã Â¤Â«Ã Â¤Â¼Ã Â¥â€¡Ã Â¤Â¸ Ã Â¤â€¦Ã Â¤Â²Ã Â¤â€” Ã Â¤Â¹Ã Â¥Ë†Ã Â¥Â¤",
     questions: {
-      education: "आपने कितनी पढ़ाई की है?",
-      family_occupation: "आपके घर में परिवार का पहले से कौन सा काम होता है?",
-      current_livelihood: "अभी आप क्या काम करते हैं?",
-      skills_interests: "आपको कौन सा काम करना पसंद है, या आप क्या सीखना चाहते हैं?",
-      mobility_constraints: "क्या आपको कहीं आने-जाने में कोई दिक्कत है?",
-      employment_preference: "आप खुद का काम शुरू करना चाहेंगे या नौकरी?",
-      local_opportunity_awareness: "आपके क्षेत्र में कौन से काम-धंधे उपलब्ध हैं, आपको पता है?",
+      education: "Ã Â¤â€ Ã Â¤ÂªÃ Â¤Â¨Ã Â¥â€¡ Ã Â¤â€¢Ã Â¤Â¿Ã Â¤Â¤Ã Â¤Â¨Ã Â¥â‚¬ Ã Â¤ÂªÃ Â¤Â¢Ã Â¤Â¼Ã Â¤Â¾Ã Â¤Ë† Ã Â¤â€¢Ã Â¥â‚¬ Ã Â¤Â¹Ã Â¥Ë†?",
+      family_occupation: "Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¥â€¡ Ã Â¤ËœÃ Â¤Â° Ã Â¤Â®Ã Â¥â€¡Ã Â¤â€š Ã Â¤ÂªÃ Â¤Â°Ã Â¤Â¿Ã Â¤ÂµÃ Â¤Â¾Ã Â¤Â° Ã Â¤â€¢Ã Â¤Â¾ Ã Â¤ÂªÃ Â¤Â¹Ã Â¤Â²Ã Â¥â€¡ Ã Â¤Â¸Ã Â¥â€¡ Ã Â¤â€¢Ã Â¥Å’Ã Â¤Â¨ Ã Â¤Â¸Ã Â¤Â¾ Ã Â¤â€¢Ã Â¤Â¾Ã Â¤Â® Ã Â¤Â¹Ã Â¥â€¹Ã Â¤Â¤Ã Â¤Â¾ Ã Â¤Â¹Ã Â¥Ë†?",
+      current_livelihood: "Ã Â¤â€¦Ã Â¤Â­Ã Â¥â‚¬ Ã Â¤â€ Ã Â¤Âª Ã Â¤â€¢Ã Â¥ÂÃ Â¤Â¯Ã Â¤Â¾ Ã Â¤â€¢Ã Â¤Â¾Ã Â¤Â® Ã Â¤â€¢Ã Â¤Â°Ã Â¤Â¤Ã Â¥â€¡ Ã Â¤Â¹Ã Â¥Ë†Ã Â¤â€š?",
+      skills_interests: "Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¥â€¹ Ã Â¤â€¢Ã Â¥Å’Ã Â¤Â¨ Ã Â¤Â¸Ã Â¤Â¾ Ã Â¤â€¢Ã Â¤Â¾Ã Â¤Â® Ã Â¤â€¢Ã Â¤Â°Ã Â¤Â¨Ã Â¤Â¾ Ã Â¤ÂªÃ Â¤Â¸Ã Â¤â€šÃ Â¤Â¦ Ã Â¤Â¹Ã Â¥Ë†, Ã Â¤Â¯Ã Â¤Â¾ Ã Â¤â€ Ã Â¤Âª Ã Â¤â€¢Ã Â¥ÂÃ Â¤Â¯Ã Â¤Â¾ Ã Â¤Â¸Ã Â¥â‚¬Ã Â¤â€“Ã Â¤Â¨Ã Â¤Â¾ Ã Â¤Å¡Ã Â¤Â¾Ã Â¤Â¹Ã Â¤Â¤Ã Â¥â€¡ Ã Â¤Â¹Ã Â¥Ë†Ã Â¤â€š?",
+      mobility_constraints: "Ã Â¤â€¢Ã Â¥ÂÃ Â¤Â¯Ã Â¤Â¾ Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¥â€¹ Ã Â¤â€¢Ã Â¤Â¹Ã Â¥â‚¬Ã Â¤â€š Ã Â¤â€ Ã Â¤Â¨Ã Â¥â€¡-Ã Â¤Å“Ã Â¤Â¾Ã Â¤Â¨Ã Â¥â€¡ Ã Â¤Â®Ã Â¥â€¡Ã Â¤â€š Ã Â¤â€¢Ã Â¥â€¹Ã Â¤Ë† Ã Â¤Â¦Ã Â¤Â¿Ã Â¤â€¢Ã Â¥ÂÃ Â¤â€¢Ã Â¤Â¤ Ã Â¤Â¹Ã Â¥Ë†?",
+      employment_preference: "Ã Â¤â€ Ã Â¤Âª Ã Â¤â€“Ã Â¥ÂÃ Â¤Â¦ Ã Â¤â€¢Ã Â¤Â¾ Ã Â¤â€¢Ã Â¤Â¾Ã Â¤Â® Ã Â¤Â¶Ã Â¥ÂÃ Â¤Â°Ã Â¥â€š Ã Â¤â€¢Ã Â¤Â°Ã Â¤Â¨Ã Â¤Â¾ Ã Â¤Å¡Ã Â¤Â¾Ã Â¤Â¹Ã Â¥â€¡Ã Â¤â€šÃ Â¤â€”Ã Â¥â€¡ Ã Â¤Â¯Ã Â¤Â¾ Ã Â¤Â¨Ã Â¥Å’Ã Â¤â€¢Ã Â¤Â°Ã Â¥â‚¬?",
+      local_opportunity_awareness: "Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¥â€¡ Ã Â¤â€¢Ã Â¥ÂÃ Â¤Â·Ã Â¥â€¡Ã Â¤Â¤Ã Â¥ÂÃ Â¤Â° Ã Â¤Â®Ã Â¥â€¡Ã Â¤â€š Ã Â¤â€¢Ã Â¥Å’Ã Â¤Â¨ Ã Â¤Â¸Ã Â¥â€¡ Ã Â¤â€¢Ã Â¤Â¾Ã Â¤Â®-Ã Â¤Â§Ã Â¤â€šÃ Â¤Â§Ã Â¥â€¡ Ã Â¤â€°Ã Â¤ÂªÃ Â¤Â²Ã Â¤Â¬Ã Â¥ÂÃ Â¤Â§ Ã Â¤Â¹Ã Â¥Ë†Ã Â¤â€š, Ã Â¤â€ Ã Â¤ÂªÃ Â¤â€¢Ã Â¥â€¹ Ã Â¤ÂªÃ Â¤Â¤Ã Â¤Â¾ Ã Â¤Â¹Ã Â¥Ë†?",
     },
   },
   en: {
     tagline: "Your voice, your path",
     languageLabel: "Select Language",
+    districtLabel: "Select District",
+    districtNone: "Select District (optional)",
     navIntake: "Voice Intake",
+    navIVR: "Phone Call Demo",
     navDashboard: "Field Officer Dashboard",
     progressSuffix: "questions completed",
-    startRecording: "🎙️ Start Speaking",
-    recording: "⏹️ Listening...",
+    startRecording: "Ã°Å¸Å½â„¢Ã¯Â¸Â Start Speaking",
+    recording: "Ã¢ÂÂ¹Ã¯Â¸Â Listening...",
     unsupportedBrowser: "Voice recognition isn't supported in this browser. Please use Chrome.",
     listening: "Listening... please speak",
     processing: "Processing...",
@@ -79,8 +91,8 @@ const TRANSLATIONS = {
     course: "NSQF Course",
     trade: "Trade",
     confidenceLabel: "Confidence",
-    reviewPending: "⚠️ Field officer review pending — automated confidence was low",
-    autoApproved: "✅ Auto-Approved",
+    reviewPending: "Ã¢Å¡Â Ã¯Â¸Â Field officer review pending Ã¢â‚¬â€ automated confidence was low",
+    autoApproved: "Ã¢Å“â€¦ Auto-Approved",
     savedMsg: "Record saved to dashboard.",
     dashboardTitle: "Beneficiaries",
     refresh: "Refresh",
@@ -93,6 +105,7 @@ const TRANSLATIONS = {
     colTrade: "Trade",
     colConfidence: "Confidence",
     colStatus: "Status",
+    colDistrict: "District",
     needsReview: "Needs Review",
     approved: "Auto-Approved",
     officerApproved: "Approved by Officer",
@@ -107,6 +120,11 @@ const TRANSLATIONS = {
     empPref: "Employment Preference",
     localAware: "Local Opportunity Awareness",
     greeting: "Hello! Let's get started. How much education have you completed?",
+    incomingCall: "Incoming Call: SAARTHI Helpline",
+    connectBtn: "Connect Call",
+    connected: "Call Connected",
+    hangUp: "Hang Up",
+    ivrNote: "This is a demo of a phone-call based (IVR) experience Ã¢â‚¬â€ for feature-phone users, the same underlying system works without any internet browser. Same backend, different interface.",
     questions: {
       education: "How much education have you completed?",
       family_occupation: "What work has your family traditionally done?",
@@ -120,7 +138,9 @@ const TRANSLATIONS = {
 };
 
 function App() {
-  const [view, setView] = useState("intake"); // "intake" | "dashboard"
+  const [view, setView] = useState("intake"); // "intake" | "ivr" | "dashboard"
+  const [districts, setDistricts] = useState([]);
+  const [callConnected, setCallConnected] = useState(false);
 
   const [profile, setProfile] = useState({
     education: "",
@@ -130,6 +150,7 @@ function App() {
     mobility_constraints: "",
     employment_preference: "",
     local_opportunity_awareness: "",
+    district: "",
     language: "hi",
   });
 
@@ -161,6 +182,10 @@ function App() {
 
   const getNextEmptyField = (p) => fieldOrder.find((f) => !p[f]);
 
+  useEffect(() => {
+    axios.get(`${API_BASE}/districts`).then((res) => setDistricts(res.data)).catch(() => {});
+  }, []);
+
   const handleLanguageChange = (e) => {
     const newLang = e.target.value;
     setProfile((prev) => ({ ...prev, language: newLang }));
@@ -168,6 +193,10 @@ function App() {
     if (!started && !intakeComplete) {
       setCurrentQuestion(TRANSLATIONS[newLang].greeting);
     }
+  };
+
+  const handleDistrictChange = (e) => {
+    setProfile((prev) => ({ ...prev, district: e.target.value }));
   };
 
   const startRecording = () => {
@@ -315,16 +344,88 @@ function App() {
     return "status-pill approved";
   };
 
+  const districtLabel = (d) => {
+    if (!d) return "-";
+    const match = districts.find((x) => x.key === d);
+    if (!match) return d;
+    return profile.language === "hi" ? match.label_hi : match.label_en;
+  };
+
+  const renderConversation = () => (
+    <>
+      <div className="progress-bar">
+        <div
+          className="progress-fill"
+          style={{ width: `${(progressCount / fieldOrder.length) * 100}%` }}
+        />
+      </div>
+      <p className="progress-text">{progressCount} / {fieldOrder.length} {t.progressSuffix}</p>
+
+      {!intakeComplete && (
+        <div className="conversation-card">
+          <p className="question">{currentQuestion}</p>
+
+          {!isRecording ? (
+            <button className="record-btn" onClick={startRecording}>
+              {t.startRecording}
+            </button>
+          ) : (
+            <button className="record-btn recording" onClick={stopRecording}>
+              {t.recording}
+            </button>
+          )}
+
+          {statusMsg && <p className="status">{statusMsg}</p>}
+          {transcript && (
+            <p className="transcript">{t.youSaid}"{transcript}"</p>
+          )}
+        </div>
+      )}
+
+      {intakeComplete && recommendation && (
+        <div className="recommendation-card">
+          <h2>{t.recommendationTitle}</h2>
+          <p><strong>{t.course}:</strong> {recommendation.nsqf_course}</p>
+          <p><strong>{t.trade}:</strong> {recommendation.trade}</p>
+          <p><strong>{t.confidenceLabel}:</strong> {(recommendation.confidence * 100).toFixed(0)}%</p>
+          {recommendation.needs_human_review ? (
+            <p className="status-badge review">{t.reviewPending}</p>
+          ) : (
+            <p className="status-badge approved">{t.autoApproved}</p>
+          )}
+          {recommendation.skill_gap_note && (
+            <p className="skill-gap-note">{recommendation.skill_gap_note}</p>
+          )}
+          {recommendation.local_demand_note && (
+            <p className="demand-note">Ã°Å¸â€œË† {recommendation.local_demand_note}</p>
+          )}
+          {saved && <p className="saved-msg">{t.savedMsg}</p>}
+        </div>
+      )}
+    </>
+  );
+
   return (
     <div className="app-container">
       <h1>SAARTHI</h1>
       <p className="tagline">{t.tagline}</p>
+      <p className="pmajay-note">PM-AJAY GIA beneficiaries ke liye banaya gaya</p>
 
       <div className="lang-select">
         <label htmlFor="lang">{t.languageLabel}: </label>
         <select id="lang" value={profile.language} onChange={handleLanguageChange}>
-          <option value="hi">हिंदी</option>
+          <option value="hi">Ã Â¤Â¹Ã Â¤Â¿Ã Â¤â€šÃ Â¤Â¦Ã Â¥â‚¬</option>
           <option value="en">English</option>
+        </select>
+
+        <label htmlFor="district" style={{ marginLeft: "16px" }}>{t.districtLabel}: </label>
+        <select id="district" value={profile.district} onChange={handleDistrictChange}>
+          <option value="">{t.districtNone}</option>
+          {districts.map((d) => (
+            <option key={d.key} value={d.key}>
+              {profile.language === "hi" ? d.label_hi : d.label_en}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -336,6 +437,12 @@ function App() {
           {t.navIntake}
         </button>
         <button
+          className={view === "ivr" ? "tab-btn active" : "tab-btn"}
+          onClick={() => setView("ivr")}
+        >
+          {t.navIVR}
+        </button>
+        <button
           className={view === "dashboard" ? "tab-btn active" : "tab-btn"}
           onClick={() => setView("dashboard")}
         >
@@ -343,52 +450,31 @@ function App() {
         </button>
       </div>
 
-      {view === "intake" && (
-        <>
-          <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{ width: `${(progressCount / fieldOrder.length) * 100}%` }}
-            />
-          </div>
-          <p className="progress-text">{progressCount} / {fieldOrder.length} {t.progressSuffix}</p>
+      {view === "intake" && renderConversation()}
 
-          {!intakeComplete && (
-            <div className="conversation-card">
-              <p className="question">{currentQuestion}</p>
-
-              {!isRecording ? (
-                <button className="record-btn" onClick={startRecording}>
-                  {t.startRecording}
+      {view === "ivr" && (
+        <div className="ivr-wrap">
+          {!callConnected ? (
+            <div className="ivr-incoming">
+              <div className="pulse-avatar">Ã°Å¸â€œÅ¾</div>
+              <p className="incoming-text">{t.incomingCall}</p>
+              <button className="connect-btn" onClick={() => setCallConnected(true)}>
+                {t.connectBtn}
+              </button>
+            </div>
+          ) : (
+            <div className="ivr-phone-frame">
+              <div className="ivr-status-bar">
+                <span className="ivr-dot"></span> {t.connected}
+                <button className="hangup-btn" onClick={() => setCallConnected(false)}>
+                  {t.hangUp}
                 </button>
-              ) : (
-                <button className="record-btn recording" onClick={stopRecording}>
-                  {t.recording}
-                </button>
-              )}
-
-              {statusMsg && <p className="status">{statusMsg}</p>}
-              {transcript && (
-                <p className="transcript">{t.youSaid}"{transcript}"</p>
-              )}
+              </div>
+              {renderConversation()}
             </div>
           )}
-
-          {intakeComplete && recommendation && (
-            <div className="recommendation-card">
-              <h2>{t.recommendationTitle}</h2>
-              <p><strong>{t.course}:</strong> {recommendation.nsqf_course}</p>
-              <p><strong>{t.trade}:</strong> {recommendation.trade}</p>
-              <p><strong>{t.confidenceLabel}:</strong> {(recommendation.confidence * 100).toFixed(0)}%</p>
-              {recommendation.needs_human_review ? (
-                <p className="status-badge review">{t.reviewPending}</p>
-              ) : (
-                <p className="status-badge approved">{t.autoApproved}</p>
-              )}
-              {saved && <p className="saved-msg">{t.savedMsg}</p>}
-            </div>
-          )}
-        </>
+          <p className="ivr-note">{t.ivrNote}</p>
+        </div>
       )}
 
       {view === "dashboard" && (
@@ -410,6 +496,7 @@ function App() {
                 <thead>
                   <tr>
                     <th>{t.colDate}</th>
+                    <th>{t.colDistrict}</th>
                     <th>{t.colEducation}</th>
                     <th>{t.colOccupation}</th>
                     <th>{t.colCourse}</th>
@@ -428,6 +515,7 @@ function App() {
                         onClick={() => setExpandedId(expandedId === b.id ? null : b.id)}
                       >
                         <td>{new Date(b.created_at).toLocaleString()}</td>
+                        <td>{districtLabel(b.district)}</td>
                         <td>{b.education}</td>
                         <td>{b.current_livelihood}</td>
                         <td>{b.nsqf_course}</td>
@@ -457,7 +545,7 @@ function App() {
                       </tr>
                       {expandedId === b.id && (
                         <tr className="detail-row">
-                          <td colSpan="8">
+                          <td colSpan="9">
                             <div className="detail-panel">
                               <h4>{t.detailsTitle}</h4>
                               <p><strong>{t.fam}:</strong> {b.family_occupation}</p>

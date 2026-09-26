@@ -30,6 +30,7 @@ def init_db():
             mobility_constraints TEXT,
             employment_preference TEXT,
             local_opportunity_awareness TEXT,
+            district TEXT,
             language TEXT,
             nsqf_course TEXT,
             trade TEXT,
@@ -42,7 +43,7 @@ def init_db():
         )
     """)
     conn.commit()
-    for col in ["officer_action TEXT", "action_at TEXT", "skill_gap_note TEXT"]:
+    for col in ["officer_action TEXT", "action_at TEXT", "skill_gap_note TEXT", "district TEXT"]:
         try:
             cur.execute(f"ALTER TABLE beneficiaries ADD COLUMN {col}")
             conn.commit()
@@ -60,6 +61,7 @@ class BeneficiaryProfile(BaseModel):
     mobility_constraints: str = ""
     employment_preference: str = ""
     local_opportunity_awareness: str = ""
+    district: str = ""
     language: str = "hi"
 
 class Recommendation(BaseModel):
@@ -68,6 +70,7 @@ class Recommendation(BaseModel):
     confidence: float
     needs_human_review: bool
     skill_gap_note: str = ""
+    local_demand_note: str = ""
 
 class SaveBeneficiaryRequest(BaseModel):
     profile: BeneficiaryProfile
@@ -130,23 +133,40 @@ _course_texts = [entry["keywords"] for entry in NSQF_CATALOGUE]
 _vectorizer = TfidfVectorizer()
 _tfidf_matrix = _vectorizer.fit_transform(_course_texts)
 
-SKILL_GAP_NOTES = {
-    "hi": {
-        "no_match": "Aapke jawabon se koi clear trade match nahi mila. Field officer ke saath basic career-counselling session recommend kiya jaata hai.",
-        "low": "Match mila hai lekin confidence kam hai — training shuru karne se pehle ek chhoti foundational/orientation session helpful ho sakti hai.",
-        "none": ""
+# Sample district-level local demand data (Chhattisgarh aspirational districts)
+DISTRICT_OPPORTUNITIES = {
+    "raipur": {
+        "label_hi": "रायपुर",
+        "label_en": "Raipur",
+        "high_demand_trades": ["Electrician Level 4", "Retail Sales Associate Level 3", "Mobile Repair Technician Level 4", "DTP and Computer Operator Level 4"]
     },
-    "en": {
-        "no_match": "No clear trade match found from your answers. A basic career-counselling session with a field officer is recommended.",
-        "low": "A match was found but confidence is low — a short foundational/orientation session before enrolling may help.",
-        "none": ""
-    }
+    "bastar": {
+        "label_hi": "बस्तर",
+        "label_en": "Bastar",
+        "high_demand_trades": ["Handicrafts and Embroidery Level 3", "Handloom Weaving Level 3", "Agri-Entrepreneurship Level 4", "Horticulture Level 3"]
+    },
+    "durg": {
+        "label_hi": "दुर्ग",
+        "label_en": "Durg",
+        "high_demand_trades": ["Welding Level 4", "Two Wheeler Mechanic Level 4", "Masonry Level 3", "Solar Panel Installation Level 4"]
+    },
+    "bilaspur": {
+        "label_hi": "बिलासपुर",
+        "label_en": "Bilaspur",
+        "high_demand_trades": ["Tailoring Level 3", "Food Processing Level 3", "Dairy Farming Level 3", "General Duty Assistant (Health) Level 4"]
+    },
+}
+
+DEMAND_BOOST = 0.12  # added to cosine score if course is high-demand in beneficiary's district
+
+LOCAL_DEMAND_MESSAGES = {
+    "hi": "yeh trade aapke district mein high-demand mein hai — job milne ke chances zyada hain.",
+    "en": "this trade is in high demand in your district — job prospects are stronger here.",
 }
 
 def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
     text_blob = f"{profile.skills_interests} {profile.family_occupation} {profile.current_livelihood} {profile.local_opportunity_awareness}".lower().strip()
-    lang = profile.language if profile.language in SKILL_GAP_NOTES else "hi"
-    notes = SKILL_GAP_NOTES[lang]
+    lang = profile.language if profile.language in ("hi", "en") else "hi"
 
     if not text_blob:
         return Recommendation(
@@ -154,17 +174,25 @@ def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
             trade="Unknown",
             confidence=0.0,
             needs_human_review=True,
-            skill_gap_note=notes["no_match"]
+            skill_gap_note="Aapke jawabon se koi clear trade match nahi mila. Field officer ke saath basic career-counselling session recommend kiya jaata hai." if lang == "hi" else "No clear trade match found from your answers. A basic career-counselling session with a field officer is recommended."
         )
 
     user_vector = _vectorizer.transform([text_blob])
-    similarities = cosine_similarity(user_vector, _tfidf_matrix)[0]
+    similarities = cosine_similarity(user_vector, _tfidf_matrix)[0].copy()
+
+    district_key = profile.district.strip().lower()
+    district_info = DISTRICT_OPPORTUNITIES.get(district_key)
+    boosted_courses = set()
+    if district_info:
+        boosted_courses = set(district_info["high_demand_trades"])
+        for idx, entry in enumerate(NSQF_CATALOGUE):
+            if entry["course"] in boosted_courses:
+                similarities[idx] += DEMAND_BOOST
 
     best_index = similarities.argmax()
     best_score = similarities[best_index]
     best_match = NSQF_CATALOGUE[best_index]
-
-    confidence = round(float(best_score), 2)
+    confidence = round(float(min(best_score, 1.0)), 2)
 
     if confidence < 0.15:
         return Recommendation(
@@ -172,23 +200,37 @@ def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
             trade="Unknown",
             confidence=confidence,
             needs_human_review=True,
-            skill_gap_note=notes["no_match"]
+            skill_gap_note="Aapke jawabon se koi clear trade match nahi mila. Field officer ke saath basic career-counselling session recommend kiya jaata hai." if lang == "hi" else "No clear trade match found from your answers. A basic career-counselling session with a field officer is recommended."
         )
 
     needs_review = confidence < 0.35
-    gap_note = notes["low"] if needs_review else notes["none"]
+    gap_note = ""
+    if needs_review:
+        gap_note = "Match mila hai lekin confidence kam hai — training shuru karne se pehle ek chhoti foundational/orientation session helpful ho sakti hai." if lang == "hi" else "A match was found but confidence is low — a short foundational/orientation session before enrolling may help."
+
+    demand_note = ""
+    if best_match["course"] in boosted_courses:
+        demand_note = LOCAL_DEMAND_MESSAGES[lang]
 
     return Recommendation(
         nsqf_course=best_match["course"],
         trade=best_match["trade"],
         confidence=confidence,
         needs_human_review=needs_review,
-        skill_gap_note=gap_note
+        skill_gap_note=gap_note,
+        local_demand_note=demand_note
     )
 
 @app.get("/")
 def root():
     return {"status": "SAARTHI backend running"}
+
+@app.get("/districts")
+def get_districts():
+    return [
+        {"key": k, "label_hi": v["label_hi"], "label_en": v["label_en"]}
+        for k, v in DISTRICT_OPPORTUNITIES.items()
+    ]
 
 @app.post("/next-question")
 def next_question(profile: BeneficiaryProfile):
@@ -208,17 +250,17 @@ def save_beneficiary(data: SaveBeneficiaryRequest):
         INSERT INTO beneficiaries (
             education, family_occupation, current_livelihood, skills_interests,
             mobility_constraints, employment_preference, local_opportunity_awareness,
-            language, nsqf_course, trade, confidence, needs_human_review,
+            district, language, nsqf_course, trade, confidence, needs_human_review,
             skill_gap_note, officer_action, action_at, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data.profile.education, data.profile.family_occupation, data.profile.current_livelihood,
         data.profile.skills_interests, data.profile.mobility_constraints,
         data.profile.employment_preference, data.profile.local_opportunity_awareness,
-        data.profile.language, data.recommendation.nsqf_course, data.recommendation.trade,
-        data.recommendation.confidence, int(data.recommendation.needs_human_review),
-        data.recommendation.skill_gap_note, None, None,
-        datetime.now().isoformat()
+        data.profile.district, data.profile.language, data.recommendation.nsqf_course,
+        data.recommendation.trade, data.recommendation.confidence,
+        int(data.recommendation.needs_human_review), data.recommendation.skill_gap_note,
+        None, None, datetime.now().isoformat()
     ))
     conn.commit()
     new_id = cur.lastrowid
