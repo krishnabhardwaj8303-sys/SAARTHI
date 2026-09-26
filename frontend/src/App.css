@@ -1,0 +1,302 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #1A2332;
+  font-family: "Segoe UI", sans-serif;
+  color: white;
+}
+
+.app-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+h1 {
+  color: #00A8A8;
+  font-size: 2.5rem;
+  margin-bottom: 0;
+  letter-spacing: 2px;
+}
+
+.tagline {
+  color: #ccc;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.tab-btn {
+  background: #23293b;
+  color: #ccc;
+  border: 1px solid #3a4358;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.tab-btn.active {
+  background: #00A8A8;
+  color: white;
+  border-color: #00A8A8;
+}
+
+.progress-bar {
+  background: #2a3548;
+  border-radius: 20px;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  background: #00A8A8;
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 25px;
+}
+
+.conversation-card, .recommendation-card {
+  background: #23293b;
+  border: 1px solid #00A8A8;
+  border-radius: 16px;
+  padding: 25px;
+  text-align: left;
+}
+
+.question {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.record-btn {
+  display: block;
+  margin: 0 auto;
+  background: #00A8A8;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.record-btn:hover {
+  background: #008f8f;
+}
+
+.record-btn.recording {
+  background: #E87722;
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(232, 119, 34, 0.6); }
+  70% { box-shadow: 0 0 0 12px rgba(232, 119, 34, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(232, 119, 34, 0); }
+}
+
+.status {
+  margin-top: 15px;
+  color: #aaa;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.transcript {
+  margin-top: 15px;
+  font-style: italic;
+  color: #ccc;
+  text-align: center;
+}
+
+.recommendation-card h2 {
+  color: #2E7D32;
+}
+
+.status-badge {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.status-badge.review {
+  background: rgba(232, 167, 34, 0.15);
+  color: #E8A722;
+  border: 1px solid #E8A722;
+}
+
+.status-badge.approved {
+  background: rgba(46, 125, 50, 0.15);
+  color: #4CAF50;
+  border: 1px solid #4CAF50;
+}
+
+.saved-msg {
+  margin-top: 10px;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.dashboard {
+  text-align: left;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.refresh-btn {
+  background: #2a3548;
+  color: white;
+  border: 1px solid #00A8A8;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.beneficiary-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #23293b;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.beneficiary-table th, .beneficiary-table td {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #2a3548;
+}
+
+.beneficiary-table th {
+  background: #1A2332;
+  color: #00A8A8;
+}
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.status-pill.review {
+  background: rgba(232, 167, 34, 0.15);
+  color: #E8A722;
+}
+
+.status-pill.approved {
+  background: rgba(46, 125, 50, 0.15);
+  color: #4CAF50;
+}
+
+.lang-select {
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.lang-select select {
+  background: #23293b;
+  color: white;
+  border: 1px solid #00A8A8;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background: #2a3548;
+}
+
+.detail-row td {
+  padding: 0;
+  border-bottom: 1px solid #2a3548;
+}
+
+.detail-panel {
+  background: #1A2332;
+  padding: 16px 20px;
+  border-left: 3px solid #00A8A8;
+}
+
+.detail-panel h4 {
+  color: #00A8A8;
+  margin-top: 0;
+}
+
+.detail-panel p {
+  font-size: 0.85rem;
+  margin: 6px 0;
+}
+
+.close-btn {
+  margin-top: 10px;
+  background: #2a3548;
+  color: #ccc;
+  border: 1px solid #3a4358;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.action-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.approve-btn, .reassign-btn {
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.approve-btn {
+  background: #2E7D32;
+  color: white;
+}
+
+.reassign-btn {
+  background: #E87722;
+  color: white;
+}
+
+.status-pill.reassigned {
+  background: rgba(66, 133, 244, 0.15);
+  color: #4285F4;
+}
