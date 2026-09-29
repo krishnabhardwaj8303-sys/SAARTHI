@@ -5,6 +5,7 @@ import sqlite3
 from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from district_data import STATES_AND_DISTRICTS
 
 app = FastAPI(title="SAARTHI Backend")
 
@@ -43,7 +44,7 @@ def init_db():
         )
     """)
     conn.commit()
-    for col in ["officer_action TEXT", "action_at TEXT", "skill_gap_note TEXT", "district TEXT"]:
+    for col in ["officer_action TEXT", "action_at TEXT", "skill_gap_note TEXT", "district TEXT", "state TEXT"]:
         try:
             cur.execute(f"ALTER TABLE beneficiaries ADD COLUMN {col}")
             conn.commit()
@@ -61,6 +62,7 @@ class BeneficiaryProfile(BaseModel):
     mobility_constraints: str = ""
     employment_preference: str = ""
     local_opportunity_awareness: str = ""
+    state: str = ""
     district: str = ""
     language: str = "hi"
 
@@ -133,7 +135,6 @@ _course_texts = [entry["keywords"] for entry in NSQF_CATALOGUE]
 _vectorizer = TfidfVectorizer()
 _tfidf_matrix = _vectorizer.fit_transform(_course_texts)
 
-# Sample district-level local demand data (Chhattisgarh aspirational districts)
 DISTRICT_OPPORTUNITIES = {
     "raipur": {
         "label_hi": "रायपुर",
@@ -155,18 +156,120 @@ DISTRICT_OPPORTUNITIES = {
         "label_en": "Bilaspur",
         "high_demand_trades": ["Tailoring Level 3", "Food Processing Level 3", "Dairy Farming Level 3", "General Duty Assistant (Health) Level 4"]
     },
+    "korba": {
+        "label_hi": "कोरबा",
+        "label_en": "Korba",
+        "high_demand_trades": ["Welding Level 4", "Electrician Level 4", "Two Wheeler Mechanic Level 4", "Security Guard Level 3"]
+    },
+    "rajnandgaon": {
+        "label_hi": "राजनांदगांव",
+        "label_en": "Rajnandgaon",
+        "high_demand_trades": ["Handloom Weaving Level 3", "Agri-Entrepreneurship Level 4", "Tailoring Level 3", "Poultry Farming Level 3"]
+    },
+    "jagdalpur": {
+        "label_hi": "जगदलपुर",
+        "label_en": "Jagdalpur",
+        "high_demand_trades": ["Handicrafts and Embroidery Level 3", "Horticulture Level 3", "Hospitality and Tourism Level 3", "Pottery Making Level 3"]
+    },
+    "ambikapur": {
+        "label_hi": "अंबिकापुर",
+        "label_en": "Ambikapur",
+        "high_demand_trades": ["Agri-Entrepreneurship Level 4", "Dairy Farming Level 3", "Carpentry Level 3", "Food Processing Level 3"]
+    },
+    "dhamtari": {
+        "label_hi": "धमतरी",
+        "label_en": "Dhamtari",
+        "high_demand_trades": ["Horticulture Level 3", "Dairy Farming Level 3", "Fisheries Level 3", "Retail Sales Associate Level 3"]
+    },
+    "mahasamund": {
+        "label_hi": "महासमुंद",
+        "label_en": "Mahasamund",
+        "high_demand_trades": ["Agri-Entrepreneurship Level 4", "Tailoring Level 3", "Bakery and Confectionery Level 3", "Retail Sales Associate Level 3"]
+    },
+    "kanker": {
+        "label_hi": "कांकेर",
+        "label_en": "Kanker",
+        "high_demand_trades": ["Handicrafts and Embroidery Level 3", "Horticulture Level 3", "Poultry Farming Level 3", "General Duty Assistant (Health) Level 4"]
+    },
+    "kabirdham": {
+        "label_hi": "कबीरधाम",
+        "label_en": "Kabirdham",
+        "high_demand_trades": ["Dairy Farming Level 3", "Agri-Entrepreneurship Level 4", "Masonry Level 3", "Two Wheeler Mechanic Level 4"]
+    },
+    "bemetara": {
+        "label_hi": "बेमेतरा",
+        "label_en": "Bemetara",
+        "high_demand_trades": ["Agri-Entrepreneurship Level 4", "Welding Level 4", "Electrician Level 4", "Food Processing Level 3"]
+    },
+    "balodabazar": {
+        "label_hi": "बलौदाबाजार",
+        "label_en": "Balodabazar",
+        "high_demand_trades": ["Masonry Level 3", "Welding Level 4", "Two Wheeler Mechanic Level 4", "Retail Sales Associate Level 3"]
+    },
+    "surajpur": {
+        "label_hi": "सूरजपुर",
+        "label_en": "Surajpur",
+        "high_demand_trades": ["Solar Panel Installation Level 4", "Agri-Entrepreneurship Level 4", "Electrician Level 4", "Carpentry Level 3"]
+    },
 }
 
-DEMAND_BOOST = 0.12  # added to cosine score if course is high-demand in beneficiary's district
+DEMAND_BOOST = 0.12
+
+SKILL_GAP_NOTES = {
+    "hi": {
+        "no_match": "Aapke jawabon se koi clear trade match nahi mila. Field officer ke saath basic career-counselling session recommend kiya jaata hai.",
+        "low": "Match mila hai lekin confidence kam hai - training shuru karne se pehle ek chhoti foundational session helpful ho sakti hai.",
+    },
+    "en": {
+        "no_match": "No clear trade match found from your answers. A basic career-counselling session with a field officer is recommended.",
+        "low": "A match was found but confidence is low - a short foundational session before enrolling may help.",
+    },
+    "mr": {
+        "no_match": "तुमच्या उत्तरांवरून कोणतीही स्पष्ट व्यवसाय जुळणी सापडली नाही. फील्ड ऑफिसरसोबत मूलभूत करिअर-सल्ला सत्राची शिफारस केली जाते.",
+        "low": "जुळणी सापडली आहे पण विश्वास पातळी कमी आहे - प्रशिक्षण सुरू करण्यापूर्वी एक छोटे मूलभूत सत्र उपयुक्त ठरू शकते.",
+    },
+    "bn": {
+        "no_match": "আপনার উত্তর থেকে কোনো স্পষ্ট ট্রেড মিল পাওয়া যায়নি। ফিল্ড অফিসারের সাথে একটি মৌলিক ক্যারিয়ার-কাউন্সেলিং সেশনের সুপারিশ করা হচ্ছে।",
+        "low": "একটি মিল পাওয়া গেছে কিন্তু আত্মবিশ্বাসের মাত্রা কম - একটি সংক্ষিপ্ত মৌলিক সেশন সহায়ক হতে পারে।",
+    },
+    "ta": {
+        "no_match": "உங்கள் பதில்களிலிருந்து தெளிவான தொழில் பொருத்தம் எதுவும் கிடைக்கவில்லை. கள அதிகாரியுடன் அடிப்படை ஆலோசனை அமர்வு பரிந்துரைக்கப்படுகிறது.",
+        "low": "பொருத்தம் கிடைத்துள்ளது ஆனால் நம்பிக்கை நிலை குறைவாக உள்ளது - ஒரு சிறிய அடிப்படை அமர்வு பயனுள்ளதாக இருக்கும்.",
+    },
+    "te": {
+        "no_match": "మీ సమాధానాల నుండి స్పష్టమైన వృత్తి సరిపోలిక కనుగొనబడలేదు. ఫీల్డ్ ఆఫీసర్‌తో ప్రాథమిక కెరీర్ సెషన్ సిఫార్సు చేయబడుతుంది.",
+        "low": "సరిపోలిక కనుగొనబడింది కానీ నమ్మక స్థాయి తక్కువగా ఉంది - ఒక చిన్న ప్రాథమిక సెషన్ సహాయపడవచ్చు.",
+    },
+    "gu": {
+        "no_match": "તમારા જવાબો પરથી કોઈ સ્પષ્ટ વ્યવસાય મેળ મળ્યો નથી. ફિલ્ડ ઓફિસર સાથે મૂળભૂત કારકિર્દી સત્રની ભલામણ કરવામાં આવે છે.",
+        "low": "મેળ મળ્યો છે પરંતુ વિશ્વાસ સ્તર ઓછું છે - એક ટૂંકું મૂળભૂત સત્ર મદદરૂપ થઈ શકે છે.",
+    },
+    "pa": {
+        "no_match": "ਤੁਹਾਡੇ ਜਵਾਬਾਂ ਤੋਂ ਕੋਈ ਸਪਸ਼ਟ ਕਿੱਤਾ ਮੇਲ ਨਹੀਂ ਮਿਲਿਆ। ਫੀਲਡ ਅਫਸਰ ਨਾਲ ਬੁਨਿਆਦੀ ਕਰੀਅਰ ਸੈਸ਼ਨ ਦੀ ਸਿਫਾਰਸ਼ ਕੀਤੀ ਜਾਂਦੀ ਹੈ।",
+        "low": "ਮੇਲ ਮਿਲ ਗਿਆ ਹੈ ਪਰ ਭਰੋਸੇ ਦਾ ਪੱਧਰ ਘੱਟ ਹੈ - ਇੱਕ ਛੋਟਾ ਬੁਨਿਆਦੀ ਸੈਸ਼ਨ ਮਦਦਗਾਰ ਹੋ ਸਕਦਾ ਹੈ।",
+    },
+    "or": {
+        "no_match": "ଆପଣଙ୍କ ଉତ୍ତରରୁ କୌଣସି ସ୍ପଷ୍ଟ ବୃତ୍ତି ମେଳ ମିଳିଲା ନାହିଁ। ଫିଲ୍ଡ ଅଫିସର ସହିତ ଏକ ମୌଳିକ ପରାମର୍ଶ ସେସନ ସୁପାରିଶ କରାଯାଏ।",
+        "low": "ଏକ ମେଳ ମିଳିଛି କିନ୍ତୁ ବିଶ୍ୱାସ ସ୍ତର କମ୍ ଅଛି - ଏକ ଛୋଟ ମୌଳିକ ସେସନ ସହାୟକ ହୋଇପାରେ।",
+    },
+}
 
 LOCAL_DEMAND_MESSAGES = {
-    "hi": "yeh trade aapke district mein high-demand mein hai — job milne ke chances zyada hain.",
-    "en": "this trade is in high demand in your district — job prospects are stronger here.",
+    "hi": "yeh trade aapke district mein high-demand mein hai - job milne ke chances zyada hain.",
+    "en": "this trade is in high demand in your district - job prospects are stronger here.",
+    "mr": "हा व्यवसाय तुमच्या जिल्ह्यात जास्त मागणीत आहे - नोकरी मिळण्याची शक्यता जास्त आहे.",
+    "bn": "এই পেশাটি আপনার জেলায় উচ্চ চাহিদায় রয়েছে - চাকরি পাওয়ার সম্ভাবনা বেশি।",
+    "ta": "இந்த தொழில் உங்கள் மாவட்டத்தில் அதிக தேவையில் உள்ளது - வேலை வாய்ப்பு அதிகம்.",
+    "te": "ఈ వృత్తికి మీ జిల్లాలో అధిక డిమాండ్ ఉంది - ఉద్యోగ అవకాశాలు ఎక్కువ.",
+    "gu": "આ વ્યવસાય તમારા જિલ્લામાં ઉચ્ચ માંગમાં છે - નોકરી મળવાની શક્યતા વધુ છે.",
+    "pa": "ਇਹ ਕਿੱਤਾ ਤੁਹਾਡੇ ਜ਼ਿਲ੍ਹੇ ਵਿੱਚ ਬਹੁਤ ਮੰਗ ਵਿੱਚ ਹੈ - ਨੌਕਰੀ ਮਿਲਣ ਦੀ ਸੰਭਾਵਨਾ ਵਧੇਰੇ ਹੈ।",
+    "or": "ଏହି ବୃତ୍ତି ଆପଣଙ୍କ ଜିଲ୍ଲାରେ ଅଧିକ ଚାହିଦାରେ ଅଛି - ଚାକିରି ମିଳିବାର ସମ୍ଭାବନା ଅଧିକ।",
 }
 
 def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
     text_blob = f"{profile.skills_interests} {profile.family_occupation} {profile.current_livelihood} {profile.local_opportunity_awareness}".lower().strip()
-    lang = profile.language if profile.language in ("hi", "en") else "hi"
+    lang = profile.language if profile.language in SKILL_GAP_NOTES else "hi"
+    notes = SKILL_GAP_NOTES[lang]
 
     if not text_blob:
         return Recommendation(
@@ -174,20 +277,22 @@ def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
             trade="Unknown",
             confidence=0.0,
             needs_human_review=True,
-            skill_gap_note="Aapke jawabon se koi clear trade match nahi mila. Field officer ke saath basic career-counselling session recommend kiya jaata hai." if lang == "hi" else "No clear trade match found from your answers. A basic career-counselling session with a field officer is recommended."
+            skill_gap_note=notes["no_match"]
         )
 
     user_vector = _vectorizer.transform([text_blob])
     similarities = cosine_similarity(user_vector, _tfidf_matrix)[0].copy()
 
+    state_key = profile.state.strip().lower()
     district_key = profile.district.strip().lower()
-    district_info = DISTRICT_OPPORTUNITIES.get(district_key)
     boosted_courses = set()
-    if district_info:
-        boosted_courses = set(district_info["high_demand_trades"])
-        for idx, entry in enumerate(NSQF_CATALOGUE):
-            if entry["course"] in boosted_courses:
-                similarities[idx] += DEMAND_BOOST
+    if state_key in STATES_AND_DISTRICTS:
+        districts = STATES_AND_DISTRICTS[state_key]["districts"]
+        if district_key in districts:
+            boosted_courses = set(districts[district_key]["high_demand_trades"])
+            for idx, entry in enumerate(NSQF_CATALOGUE):
+                if entry["course"] in boosted_courses:
+                    similarities[idx] += DEMAND_BOOST
 
     best_index = similarities.argmax()
     best_score = similarities[best_index]
@@ -200,17 +305,15 @@ def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
             trade="Unknown",
             confidence=confidence,
             needs_human_review=True,
-            skill_gap_note="Aapke jawabon se koi clear trade match nahi mila. Field officer ke saath basic career-counselling session recommend kiya jaata hai." if lang == "hi" else "No clear trade match found from your answers. A basic career-counselling session with a field officer is recommended."
+            skill_gap_note=notes["no_match"]
         )
 
     needs_review = confidence < 0.35
-    gap_note = ""
-    if needs_review:
-        gap_note = "Match mila hai lekin confidence kam hai — training shuru karne se pehle ek chhoti foundational/orientation session helpful ho sakti hai." if lang == "hi" else "A match was found but confidence is low — a short foundational/orientation session before enrolling may help."
+    gap_note = notes["low"] if needs_review else ""
 
     demand_note = ""
     if best_match["course"] in boosted_courses:
-        demand_note = LOCAL_DEMAND_MESSAGES[lang]
+        demand_note = LOCAL_DEMAND_MESSAGES.get(lang, LOCAL_DEMAND_MESSAGES["hi"])
 
     return Recommendation(
         nsqf_course=best_match["course"],
@@ -225,11 +328,21 @@ def match_recommendation(profile: BeneficiaryProfile) -> Recommendation:
 def root():
     return {"status": "SAARTHI backend running"}
 
-@app.get("/districts")
-def get_districts():
+@app.get("/states")
+def get_states():
     return [
         {"key": k, "label_hi": v["label_hi"], "label_en": v["label_en"]}
-        for k, v in DISTRICT_OPPORTUNITIES.items()
+        for k, v in STATES_AND_DISTRICTS.items()
+    ]
+
+@app.get("/districts")
+def get_districts(state: str = ""):
+    if not state or state not in STATES_AND_DISTRICTS:
+        return []
+    districts = STATES_AND_DISTRICTS[state]["districts"]
+    return [
+        {"key": k, "label_hi": v["label_hi"], "label_en": v["label_en"]}
+        for k, v in districts.items()
     ]
 
 @app.post("/next-question")
@@ -250,14 +363,14 @@ def save_beneficiary(data: SaveBeneficiaryRequest):
         INSERT INTO beneficiaries (
             education, family_occupation, current_livelihood, skills_interests,
             mobility_constraints, employment_preference, local_opportunity_awareness,
-            district, language, nsqf_course, trade, confidence, needs_human_review,
+            district, state, language, nsqf_course, trade, confidence, needs_human_review,
             skill_gap_note, officer_action, action_at, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data.profile.education, data.profile.family_occupation, data.profile.current_livelihood,
         data.profile.skills_interests, data.profile.mobility_constraints,
         data.profile.employment_preference, data.profile.local_opportunity_awareness,
-        data.profile.district, data.profile.language, data.recommendation.nsqf_course,
+        data.profile.district, data.profile.state, data.profile.language, data.recommendation.nsqf_course,
         data.recommendation.trade, data.recommendation.confidence,
         int(data.recommendation.needs_human_review), data.recommendation.skill_gap_note,
         None, None, datetime.now().isoformat()
